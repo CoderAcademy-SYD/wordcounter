@@ -1,11 +1,42 @@
+const STATUS_CREATED = 201;
+const STATUS_BAD_REQUEST = 400;
+
 function WordCounter(factory, root) {
   const state = {
-    text: '',
-    count: 0
+    _text: '',
+    _count: 0,
+    _status: undefined,
+
+    set text(t) {
+      this._text = this.cleanText(t);
+      this._count = countWords(this._text);
+      render();
+    },
+    get text() {
+      return this._text;
+    },
+    set status(s) {
+      this._status = s;
+      render();
+    },
+    get status() {
+      return this._status;
+    },
+    get count() {
+      return this._count;
+    },
+    cleanText: function(text) { return text.toUpperCase() }
   }
 
   function countWords(text) {
     return text ? text.match(/\w+/g).length : 0;
+  }
+
+  function render() {
+    editor.value = state.text;
+    counter.innerHTML = state.count;
+    progress.value = state.count;
+    saveStatus.innerHTML = state.status;
   }
 
   let form = factory('form');
@@ -24,13 +55,33 @@ function WordCounter(factory, root) {
   progress.setAttribute('value', 0);
   form.append(progress);
 
+  let button = factory('button');
+  button.className = "pv2 ph3";
+  button.textContent = "Save";
+  form.append(button);
+
+  let saveStatus = factory('span')
+  saveStatus.className = "pv2";
+  form.append(saveStatus);
+
   editor.addEventListener('keyup', function(e) {
-    let words = e.target.value;
-    let count = countWords(words);
-    state.text = words;
-    state.count = count;
-    counter.innerHTML = state.count;
-    progress.value = state.count;
+    state.text = e.target.value;
+  });
+
+  button.addEventListener('click', function(e) {
+    e.preventDefault();
+    saveWords().
+      then(status => {
+        state.status = status;
+        // let messageNode = document.createTextNode(message);
+        // saveStatus.append(messageNode);
+        // setTimeout(function() {
+        //   messageNode.remove();
+        // }, 1000)
+      }).
+      catch(status => {
+        state.status = status;
+      });
   });
 
   function saveWords() {
@@ -40,35 +91,13 @@ function WordCounter(factory, root) {
       // if unsuccessful, call reject()
       setTimeout(function() {
         if (Math.random() > 0.5) {
-          resolve('success');
+          resolve(STATUS_CREATED);
         } else {
-          reject('failure');
+          reject(STATUS_BAD_REQUEST);
         }
       }, 750)
     });
   }
-
-  // let button = document.getElementById('save-button');
-  // button.addEventListener('click', function(e) {
-  //   e.preventDefault();
-    // saveWords().
-    //   then(message => {
-    //     let messageNode = document.createTextNode(message);
-    //     let saveStatus = document.getElementById('save-status');
-    //     saveStatus.append(messageNode);
-    //     setTimeout(function() {
-    //       messageNode.remove();
-    //     }, 1000)
-    //   }).
-    //   catch(message => {
-    //     let messageNode = document.createTextNode(message);
-    //     let saveStatus = document.getElementById('save-status');
-    //     saveStatus.append(messageNode);
-    //     setTimeout(function() {
-    //       messageNode.remove();
-    //     }, 1000)
-    //   });
-  // });
 }
 
 WordCounter(
