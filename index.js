@@ -1,6 +1,18 @@
 const STATUS_CREATED = 201;
 const STATUS_BAD_REQUEST = 400;
 
+function ButtonComponent(factory, root, onClick) {
+  let button = factory('button');
+  button.className = "pv2 ph3";
+  button.textContent = "Save";
+  root.append(button);
+
+  button.addEventListener('click', function(e) {
+    e.preventDefault();
+    onClick();
+  });
+}
+
 function WordCounter(factory, root) {
   const state = {
     _text: '',
@@ -36,7 +48,19 @@ function WordCounter(factory, root) {
     editor.value = state.text;
     counter.innerHTML = state.count;
     progress.value = state.count;
-    saveStatus.innerHTML = state.status;
+    if (!!state.status) {
+     saveStatus.innerHTML = state.status;
+    }
+  }
+
+  function handleClick() {
+    saveWords().
+      then(status => {
+        state.status = status;
+      }).
+      catch(status => {
+        state.status = status;
+      });
   }
 
   let form = factory('form');
@@ -55,10 +79,7 @@ function WordCounter(factory, root) {
   progress.setAttribute('value', 0);
   form.append(progress);
 
-  let button = factory('button');
-  button.className = "pv2 ph3";
-  button.textContent = "Save";
-  form.append(button);
+  ButtonComponent(factory, form, handleClick);
 
   let saveStatus = factory('span')
   saveStatus.className = "pv2";
@@ -68,21 +89,6 @@ function WordCounter(factory, root) {
     state.text = e.target.value;
   });
 
-  button.addEventListener('click', function(e) {
-    e.preventDefault();
-    saveWords().
-      then(status => {
-        state.status = status;
-        // let messageNode = document.createTextNode(message);
-        // saveStatus.append(messageNode);
-        // setTimeout(function() {
-        //   messageNode.remove();
-        // }, 1000)
-      }).
-      catch(status => {
-        state.status = status;
-      });
-  });
 
   function saveWords() {
     return new Promise((resolve, reject) => {
