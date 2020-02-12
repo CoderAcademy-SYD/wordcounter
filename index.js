@@ -1,5 +1,8 @@
+function countWords(text) {
+  return text ? text.match(/\w+/g).length : 0;
+}
+
 function Counter({ count }) {
-  const count = obj.count;
   return (
     <p className="mb2">
       Word Count: {count}
@@ -32,8 +35,23 @@ function Editor({ text }) {
   );
 }
 
-<WordCounter>
-  <Editor/>
-  <Counter/>
-  <ProgressBar/>
-</WordCounter>
+function WordCounter({ text, targetWordCount }) {
+  const wordCount = countWords(text);
+  const progress = wordCount / targetWordCount;
+  return (
+    <form className="measure pa4 sans-serif">
+      <Editor text={text}/>
+      <Counter count={wordCount}/>
+      <ProgressBar completion={progress}/>
+    </form>
+  );
+}
+
+ReactDOM.render(
+  // React.createElement(WordCounter,
+  //   { text: "Hello, World", targetWordCount: 10 }
+  // ),
+  <WordCounter text="Hello World" targetWordCount={10}/>,
+  document.getElementById('app')
+);
+
