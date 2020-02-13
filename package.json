@@ -1,0 +1,29 @@
+{
+  "name": "wordcounter-single",
+  "version": "1.0.0",
+  "description": "TODO",
+  "main": "index.js",
+  "scripts": {
+    "build": "cross-env NODE_ENV=production webpack -p",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CoderAcademy-SYD/wordcounter.git"
+  },
+  "keywords": [],
+  "author": "Michael Bamford <michael@michaelbamford.com> (michaelbamford.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CoderAcademy-SYD/wordcounter/issues"
+  },
+  "homepage": "https://github.com/CoderAcademy-SYD/wordcounter#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.6",
+    "babel-preset-react-app": "^9.1.1",
+    "cross-env": "^7.0.0",
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.11"
+  }
+}
