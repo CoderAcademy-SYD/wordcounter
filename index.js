@@ -1,3 +1,8 @@
+const SUCCESS = 201;
+const FAILURE = 400;
+const WAITING = "WAITING"
+const IDLE = "IDLE";
+
 function countWords(text) {
   return text ? text.match(/\w+/g).length : 0;
 }
@@ -11,7 +16,7 @@ function Counter({ count }) {
 }
 
 function ProgressBar({ completion }) {
-  const percentage = completion * 100;
+  const percentage = completion;
   return (
     <div className="mv2 flex flex-column">
       <label htmlFor="progress" className="mv2">
@@ -21,6 +26,20 @@ function ProgressBar({ completion }) {
         {percentage}
       </progress>
     </div>
+  );
+}
+
+function SaveButton({ onClick }) {
+  return (
+    <button onClick={onClick} className="pv2 ph3">
+      Save
+    </button>
+  );
+}
+
+function AlertBox({ status }) {
+  return (
+    <div>{status}</div>
   );
 }
 
@@ -37,6 +56,28 @@ function Editor({ text, onTextChange }) {
       <textarea value={text} id="editor" onChange={handleChange}/>
     </div>
   );
+}
+
+class SaveManager extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { saveStatus: IDLE }
+    this.save = this.save.bind(this);
+  }
+
+  save(event) {
+    event.preventDefault();
+    this.setState(() => ({ saveStatus: WAITING }));
+  }
+
+  render() {
+    return (
+      <div className="flex flex-column mv2">
+        <SaveButton onClick={this.save}/>
+        <AlertBox status={this.state.saveStatus}/>
+      </div>
+    );
+  }
 }
 
 class WordCounter extends React.Component {
@@ -61,6 +102,7 @@ class WordCounter extends React.Component {
         <Editor text={text} onTextChange={this.handleTextChange} />
         <Counter count={wordCount}/>
         <ProgressBar completion={progress}/>
+        <SaveManager data={this.state}/>
       </form>
     );
   }
