@@ -1,3 +1,6 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+
 const SUCCESS = 201;
 const FAILURE = 400;
 const WAITING = "WAITING"
