@@ -24,34 +24,55 @@ function ProgressBar({ completion }) {
   );
 }
 
-function Editor({ text }) {
+function Editor({ text, onTextChange }) {
+  function handleChange(event) {
+    onTextChange(event.target.value);
+  }
+
   return (
     <div className="flex flex-column mv2">
       <label htmlFor="editor" className="mv2">
         Enter your text:
       </label>
-      <textarea value={text} id="editor"/>
+      <textarea value={text} id="editor" onChange={handleChange}/>
     </div>
   );
 }
 
-function WordCounter({ text, targetWordCount }) {
-  const wordCount = countWords(text);
-  const progress = wordCount / targetWordCount;
-  return (
-    <form className="measure pa4 sans-serif">
-      <Editor text={text}/>
-      <Counter count={wordCount}/>
-      <ProgressBar completion={progress}/>
-    </form>
-  );
+class WordCounter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { text: '' }
+    this.handleTextChange = this.handleTextChange.bind(this);
+  }
+
+  handleTextChange(newText) {
+    this.setState(() => ({ text: newText }));
+  }
+
+  render() {
+    const { targetWordCount } = this.props;
+    const { text } = this.state;
+    const wordCount = countWords(text);
+    const progress = wordCount / targetWordCount;
+
+    return (
+      <form className="measure pa4 sans-serif">
+        <Editor text={text} onTextChange={this.handleTextChange} />
+        <Counter count={wordCount}/>
+        <ProgressBar completion={progress}/>
+      </form>
+    );
+  }
 }
 
 ReactDOM.render(
   // React.createElement(WordCounter,
   //   { text: "Hello, World", targetWordCount: 10 }
   // ),
-  <WordCounter text="Hello World" targetWordCount={10}/>,
+  <React.Fragment>
+    <WordCounter text="Hello World" targetWordCount={10}/>
+  </React.Fragment>,
   document.getElementById('app')
 );
 
