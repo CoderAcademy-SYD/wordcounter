@@ -1,7 +1,8 @@
 import React from 'react';
 import SaveButton from './SaveButton';
 import AlertBox from './AlertBox';
-import { WAITING, IDLE } from './saveStatus'
+import { SUCCESS, FAILURE, WAITING, IDLE } from './saveStatus'
+import saveWords from './saveWords';
 
 export default class SaveManager extends React.Component {
   constructor(props) {
@@ -13,6 +14,13 @@ export default class SaveManager extends React.Component {
   save(event) {
     event.preventDefault();
     this.setState(() => ({ saveStatus: WAITING }));
+    saveWords().then(() => {
+      this.setState(() => ({ saveStatus: SUCCESS }));
+    },
+    () => {
+      this.setState(() => ({ saveStatus: FAILURE }));
+    });
+    setTimeout(() => { this.setState({ saveStatus: IDLE })}, 3500);
   }
 
   render() {
