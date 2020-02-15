@@ -6,10 +6,6 @@ import Counter from '../Counter';
 import countWords from '../countWords';
 import ProgressBar from '../ProgressBar';
 
-import Enzyme from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-Enzyme.configure({ adapter: new Adapter() });
-
 describe('WordCounter', () => {
   const target = 10;
   const inputString = "one two three";
